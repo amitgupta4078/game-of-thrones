@@ -1,4 +1,5 @@
-# project
+# game-of-thrones
+A simple app, developed using VueJS that consumes anapioficeandfire.com/api
 
 ## Project setup
 ```
@@ -19,3 +20,4 @@ npm run build
 ```
 npm run lint
 ```
+
