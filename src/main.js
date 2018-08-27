@@ -23,8 +23,11 @@ Vue.filter('pluralize', pluralizeUtil);
 // Import custom child components
 import App from './App.vue'
 
+import store from './store'
+
 // Instantiate a new Vue instance
 new Vue({
-  router,
-  render: h => h(App)
+    router,
+    store,
+    render: h => h(App)
 }).$mount('#app')
