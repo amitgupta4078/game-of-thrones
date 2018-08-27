@@ -30,9 +30,12 @@ export default new Vuex.Store({
   actions: {
   	getAllBooks ({ state, getters, commit, dispatch }) {
   		console.log('Inside action')
-      if ( !state.loading ) {
+      if (!state.loading) {
         commit('setLoading', true);
         httpService.getBooks().then(response => {
+          response.data = response.data.sort(function(a, b) {
+              return a.name > b.name;
+          });
           commit('setData', response.data);
         })
         .catch(error => {

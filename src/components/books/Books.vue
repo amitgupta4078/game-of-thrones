@@ -17,10 +17,11 @@
 	  				</p>
 	  			</div>
 	  		</div>
+	  		books: {{ booksData.length }}
 	  		<div class="loading" v-if="showLoading"><small>Fetching list of books</small></div>
 	  		<table class="table table-bordered" v-else>
 				<tbody>
-					<tr v-for="(book, bookIndex) in books">
+					<tr v-for="(book, bookIndex) in booksData">
 						<td>
 							<router-link :to="`/books/${bookIndex + 1}`">{{ book.name }}</router-link>
 							<i class="float-right">by {{ book.authors.join(',')}}</i>
@@ -45,22 +46,20 @@
 			return {
 				nameQuery: '',
 				authorQuery: '',
+				books: []
 			}
 		},
 		computed: {
-			books () {
-				return this.allBooks.sort(function(a, b) {
-				    return a.name - b.name;
-				});
+			booksData() {
+				return this.$store.getters.allBooks;	
 			},
 			...mapGetters([
-		      'allBooks',
 		      'showLoading'
 		    ])
 		},
 		methods: {
 			filterByBookName () {
-				this.books = this.books.filter((book) => {
+				this.booksData = this.$store.getters.allBooks.filter((book) => {
 					return (book.name.toLowerCase().indexOf(this.nameQuery.toLowerCase()) !== -1);
 				});
 			},
