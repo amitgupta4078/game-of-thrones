@@ -20,6 +20,7 @@ export default new Vuex.Store({
   },
   mutations: {
     setLoading (state, status) {
+      console.log('mutate: ', status)
       state.loading = status;
     },
     setData (state, data) {
@@ -30,7 +31,7 @@ export default new Vuex.Store({
   	getAllBooks ({ state, getters, commit, dispatch }) {
   		console.log('Inside action')
       if ( !state.loading ) {
-        commit( 'setLoading', true );
+        commit('setLoading', true);
         httpService.getBooks().then(response => {
           commit('setData', response.data);
         })
