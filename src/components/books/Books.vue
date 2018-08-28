@@ -17,7 +17,6 @@
 	  				</p>
 	  			</div>
 	  		</div>
-	  		books: {{ books.length }}
 	  		<div class="loading" v-if="showLoading"><small>Fetching list of books</small></div>
 	  		<table class="table table-bordered" v-else>
 				<tbody>
