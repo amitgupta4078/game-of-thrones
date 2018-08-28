@@ -1,8 +1,12 @@
 import axios from 'axios';
 
 export default {
-	getBooks () {
-		return axios.get('/books');
+	getBooks (pageNo, pageSize) {
+		if (!pageNo || pageNo < 1)
+			pageNo = 1
+		if (!pageSize || pageSize < 1)
+			pageSize = 10
+		return axios.get('/books?page=' + pageNo + '&pageSize=' + pageSize);
 	},
 	getCharacters () {
 		return axios.get('/characters');
@@ -20,3 +24,4 @@ export default {
 		return axios.get(`/houses/${id}`);
 	}
 }
+

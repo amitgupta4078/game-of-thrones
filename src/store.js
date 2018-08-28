@@ -9,7 +9,11 @@ export default new Vuex.Store({
   state: {
   	allbooks: [],
     loading: false,
-    books: []
+    books: [],
+    pageNo: 1,
+    pageSize: 10,
+    startLimitReached: true,
+    endLimitReached: false
   },
   getters: {
     books: (state) => {
@@ -17,7 +21,16 @@ export default new Vuex.Store({
     },
     showLoading: (state) => {
       return state.loading;
-    }
+    },
+    pageNo: (state) => {
+      return state.pageNo;
+    },
+    startLimitReached: (state) => {
+      return state.startLimitReached;
+    },
+    endLimitReached: (state) => {
+      return state.endLimitReached;
+    },
   },
   mutations: {
     setLoading (state, status) {
@@ -26,22 +39,36 @@ export default new Vuex.Store({
     setData (state, data) {
       state.allbooks = data;
       state.books = state.allbooks;
+    },
+    toggleStartLimit (state, status) {
+      state.startLimitReached = status;
+    },
+    toggleEndLimit (state, status) {
+      state.endLimitReached = status;
     }
   },
   actions: {
-    filterBooks ({state, getters, commit, dispatch}, payload) {
+    filterBooksByName ({state, getters, commit, dispatch}, payload) {
       state.books = state.allbooks.filter((book) => {
        return (book.name.toLowerCase().indexOf(payload.query) !== -1);
+      });
+    },
+    filterBooksByAuthor ({state, getters, commit, dispatch}, payload) {
+      state.books = state.allbooks.filter((book) => {
+       return (book.authors[0].toLowerCase().indexOf(payload.query) !== -1);
       });
     },
   	getAllBooks ({state, getters, commit, dispatch}) {
       if (!state.loading) {
         commit('setLoading', true);
-        httpService.getBooks().then(response => {
+        httpService.getBooks(state.pageNo, state.pageSize).then(response => {
           response.data = response.data.sort(function(a, b) {
               return a.name > b.name;
           });
           commit('setData', response.data);
+          if(!response.data || response.data.length < state.pageSize) {
+            commit('toggleEndLimit', true);
+          }
         })
         .catch(error => {
           console.log('Error occured while fetching the books list: ', error);
@@ -50,6 +77,29 @@ export default new Vuex.Store({
           commit('setLoading', false);
         });
       }
-  	}
+  	},
+    loadPreviousPage ({state, getters, commit, dispatch}) {
+      if(state.startLimitReached)
+        return;
+      else
+      {
+        commit('toggleEndLimit', false);
+        state.pageNo--;
+        dispatch('getAllBooks');
+        if(state.pageNo === 1) {
+          commit('toggleStartLimit', true);
+        }
+      }
+    },
+    loadNextPage ({state, getters, commit, dispatch}) {
+      if(state.endLimitReached)
+        return;
+      else
+      {
+        commit('toggleStartLimit', false);
+        state.pageNo++;
+        dispatch('getAllBooks');
+      }
+    }
   }
 });

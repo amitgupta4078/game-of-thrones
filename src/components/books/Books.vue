@@ -5,20 +5,23 @@
 	  		<h1>Books</h1>
 	  		<div class="row">
 	  			<div class="offset-6 col-3">
-	  				Filter by book name: {{ nameQuery }}<input type="text" name="bookname" v-model="nameQuery" @input="filterByBookName" @change="filterByBookName" class="form-control">
-	  				<p>
-	  					<button class="btn btn-primary btn-sm" @click="clearNameQuery">Clear</button>
-	  				</p>
+	  				Filter by book name<input type="text" name="bookname" v-model="nameQuery" @input="filterByBookName" @change="filterByBookName" class="form-control">
 	  			</div>
 	  			<div class="col-3">
-	  				Filter by book author: <input type="text" name="bookauthor" v-model="authorQuery" @input="filterByBookAuthor" @change="filterByBookAuthor" class="form-control">
-	  				<p>
-	  					<button class="btn btn-primary btn-sm" @click="clearAuthorQuery">Clear</button>
-	  				</p>
+	  				Filter by book author<input type="text" name="bookauthor" v-model="authorQuery" @input="filterByBookAuthor" @change="filterByBookAuthor" class="form-control">
 	  			</div>
 	  		</div>
+	  		Current index: {{ pageNumber }}
+			<div class="row">
+				<div class="col-2">
+					<button class="btn btn-primary" @click="loadPreviousPage" :disabled="startLimitReached">&laquo;&nbsp;Previous</button>
+				</div>
+				<div class="offset-8 col-2">
+					<button class="btn btn-primary" @click="loadNextPage" :disabled="endLimitReached">Next&nbsp;&raquo;</button>
+				</div>
+			</div>
 	  		<div class="loading" v-if="showLoading"><small>Fetching list of books</small></div>
-	  		<table class="table table-bordered" v-else>
+	  		<table class="table table-bordered mt-5" v-else>
 				<tbody>
 					<tr v-for="(book, bookIndex) in books">
 						<td>
@@ -27,7 +30,7 @@
 						</td>
 					</tr>
 				</tbody>
-			</table>	
+			</table>
   		</div>
   	</div>
   </div>
@@ -36,7 +39,7 @@
 <script>
 
 	import store from '@/store.js';
-	import { mapGetters, mapState } from 'vuex';
+	import { mapGetters } from 'vuex';
 	
 	export default {
 		name: 'books',
@@ -48,23 +51,28 @@
 			}
 		},
 		computed: {
+			pageNumber () {
+				return this.$store.getters.pageNo;
+			},
 			...mapGetters([
 		      'showLoading',
-		      'books'
+		      'books',
+		      'startLimitReached',
+		      'endLimitReached'
 		    ])
 		},
 		methods: {
 			filterByBookName () {
-				store.dispatch('filterBooks', {'query': this.nameQuery.toLowerCase()})
+				store.dispatch('filterBooksByName', {'query': this.nameQuery.toLowerCase()})
 			},
 			filterByBookAuthor () {
-
+				store.dispatch('filterBooksByAuthor', {'query': this.authorQuery.toLowerCase()})
 			},
-			clearNameQuery () {
-
+			loadPreviousPage () {
+				store.dispatch('loadPreviousPage')
 			},
-			clearAuthorQuery () {
-
+			loadNextPage () {
+				store.dispatch('loadNextPage')
 			}
 		},
 		created () {
