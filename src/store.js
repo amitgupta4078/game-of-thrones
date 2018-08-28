@@ -7,29 +7,34 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-  	books: [],
+  	allbooks: [],
     loading: false,
+    books: []
   },
   getters: {
-    allBooks (state) {
+    books: (state) => {
       return state.books;
     },
-    showLoading (state) {
+    showLoading: (state) => {
       return state.loading;
     }
   },
   mutations: {
     setLoading (state, status) {
-      console.log('mutate: ', status)
       state.loading = status;
     },
     setData (state, data) {
-      state.books = data;
+      state.allbooks = data;
+      state.books = state.allbooks;
     }
   },
   actions: {
-  	getAllBooks ({ state, getters, commit, dispatch }) {
-  		console.log('Inside action')
+    filterBooks ({state, getters, commit, dispatch}, payload) {
+      state.books = state.allbooks.filter((book) => {
+       return (book.name.toLowerCase().indexOf(payload.query) !== -1);
+      });
+    },
+  	getAllBooks ({state, getters, commit, dispatch}) {
       if (!state.loading) {
         commit('setLoading', true);
         httpService.getBooks().then(response => {

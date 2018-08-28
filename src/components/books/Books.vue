@@ -17,11 +17,11 @@
 	  				</p>
 	  			</div>
 	  		</div>
-	  		books: {{ booksData.length }}
+	  		books: {{ books.length }}
 	  		<div class="loading" v-if="showLoading"><small>Fetching list of books</small></div>
 	  		<table class="table table-bordered" v-else>
 				<tbody>
-					<tr v-for="(book, bookIndex) in booksData">
+					<tr v-for="(book, bookIndex) in books">
 						<td>
 							<router-link :to="`/books/${bookIndex + 1}`">{{ book.name }}</router-link>
 							<i class="float-right">by {{ book.authors.join(',')}}</i>
@@ -37,7 +37,7 @@
 <script>
 
 	import store from '@/store.js';
-	import { mapGetters } from 'vuex';
+	import { mapGetters, mapState } from 'vuex';
 	
 	export default {
 		name: 'books',
@@ -46,22 +46,17 @@
 			return {
 				nameQuery: '',
 				authorQuery: '',
-				books: []
 			}
 		},
 		computed: {
-			booksData() {
-				return this.$store.getters.allBooks;	
-			},
 			...mapGetters([
-		      'showLoading'
+		      'showLoading',
+		      'books'
 		    ])
 		},
 		methods: {
 			filterByBookName () {
-				this.booksData = this.$store.getters.allBooks.filter((book) => {
-					return (book.name.toLowerCase().indexOf(this.nameQuery.toLowerCase()) !== -1);
-				});
+				store.dispatch('filterBooks', {'query': this.nameQuery.toLowerCase()})
 			},
 			filterByBookAuthor () {
 
