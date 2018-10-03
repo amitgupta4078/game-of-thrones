@@ -1,5 +1,5 @@
 # game-of-thrones
-A simple app, developed using VueJS that consumes <https://anapioficeandfire.com/>. See the app in action here: <https://game-of-thrones-2.herokuapp.com/>
+A simple app, developed using VueJS that consumes anapioficeandfire.com/api
 
 ## Project setup
 ```

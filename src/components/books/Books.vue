@@ -11,7 +11,6 @@
 	  				Filter by book author<input type="text" name="bookauthor" v-model="authorQuery" @input="filterByBookAuthor" @change="filterByBookAuthor" class="form-control">
 	  			</div>
 	  		</div>
-	  		Current index: {{ pageNumber }}
 			<div class="row">
 				<div class="col-2">
 					<button class="btn btn-primary" @click="loadPreviousPage" :disabled="startLimitReached">&laquo;&nbsp;Previous</button>
